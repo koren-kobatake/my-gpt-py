@@ -1,18 +1,18 @@
 import os
 import gradio as gr
-from anthropic import Anthropic
+from openai import OpenAI
 from dotenv import load_dotenv
 
-# .env
-# CLAUDE_API_KEY="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"
-
 load_dotenv()
-client = Anthropic(api_key=os.environ['CLAUDE_API_KEY'])
+client = OpenAI(api_key=os.environ['OPENAI_API_KEY'])
 
 MODELS = [
-    "claude-3-haiku-20240307",
-    "claude-3-sonnet-20240229",
-    "claude-3-opus-20240229"
+    "gpt-4o-2024-11-20",
+    "gpt-4o-2024-08-06",
+    "gpt-4o-2024-05-13",
+    "chatgpt-4o-latest",
+    "gpt-3.5-turbo",
+    "gpt-4o-mini"
 ]
 
 def chatbot_response(message, history, model):
@@ -22,13 +22,11 @@ def chatbot_response(message, history, model):
     for h in history:
         messages.append({"role": h["role"], "content": h["content"]})
     messages.append({"role": "user", "content": message})
-    
-    response = client.messages.create(
+    completion = client.chat.completions.create(
         model=model,
-        max_tokens=1000,
-        messages=messages
+        messages=messages,
     )
-    return response.content[0].text
+    return completion.choices[0].message.content
 
 with gr.Blocks() as app:
     model_dropdown = gr.Dropdown(choices=MODELS, label="Select Model", value=MODELS[0])

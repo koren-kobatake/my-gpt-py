@@ -31,6 +31,10 @@ source chatgpt-env/bin/activate
 # 必要なパッケージのインストール
 pip install openai
 pip install python-dotenv
+pip install gradio
+
+# upgrade
+pip install --upgrade gradio
 
 # Pythonファイルの実行
 python main.py

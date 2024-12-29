@@ -33,6 +33,9 @@ pip install openai
 pip install python-dotenv
 pip install gradio
 
+# upgrade
+pip install --upgrade gradio
+
 # Pythonファイルの実行
 python main.py
 
