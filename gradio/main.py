@@ -15,7 +15,7 @@ def chatbot_response(message, history):
         messages.append({"role": "assistant", "content": h[1]})
     messages.append({"role": "user", "content": message})
     completion = client.chat.completions.create(
-        model="gpt-4o",
+        model="chatgpt-4o-latest",
         messages=messages,
     )
     return completion.choices[0].message.content

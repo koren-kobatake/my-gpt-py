@@ -1,0 +1,11 @@
+__pycache__
+claude-env
+conversation
+
+# misc
+.DS_Store
+*.pem
+
+# local env files
+.env*.local
+.env
