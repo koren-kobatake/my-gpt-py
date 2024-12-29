@@ -3,6 +3,9 @@ import gradio as gr
 from anthropic import Anthropic
 from dotenv import load_dotenv
 
+# .env
+# CLAUDE_API_KEY="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"
+
 load_dotenv()
 client = Anthropic(api_key=os.environ['CLAUDE_API_KEY'])
 
