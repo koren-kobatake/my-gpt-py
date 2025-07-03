@@ -2,6 +2,7 @@ __pycache__
 chatgpt-env
 conversation
 chat_histories
+markdown_exports
 
 # misc
 .DS_Store
