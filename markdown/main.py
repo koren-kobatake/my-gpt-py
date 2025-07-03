@@ -15,6 +15,22 @@ MARKDOWN_EXPORT_DIR = "markdown_exports"
 os.makedirs(CHAT_HISTORY_DIR, exist_ok=True)
 os.makedirs(MARKDOWN_EXPORT_DIR, exist_ok=True)
 
+# 最新モデル一覧と特徴（2025年7月時点）
+MODEL_INFO = {
+    "chatgpt-4o-latest": "chatgpt-4o-latest: GPT-4oの最新バージョンに自動更新される動的モデル。OpenAIの最新研究成果を反映。APIでの研究・評価や、常に最新の性能を体験したい用途に最適。実運用には日付指定モデル推奨。",
+    # "gpt-4.5": "GPT-4.5: 感情理解・創造性・自然な対話に優れ、ハルシネーションが大幅減少。高品質な文章生成や創造的タスクに最適。",
+    "gpt-4.1": "GPT-4.1: 長文脈処理・高速レスポンス・コーディング能力向上。長文解析やプログラミング支援に最適。",
+    "gpt-4.1-mini": "GPT-4.1 mini: 高速・低コスト。リアルタイム応答やコスト重視の業務自動化に最適。",
+    "gpt-4.1-nano": "GPT-4.1 nano: 超軽量モデル。コスト・速度重視の用途向け。",
+    "gpt-4o": "GPT-4o: テキスト・画像・音声のマルチモーダル対応。マルチモーダルAIアプリや画像＋テキスト処理に最適。",
+    "gpt-4o-mini": "GPT-4o mini: GPT-4oの軽量版。日常的なチャットや軽量アプリ向け。",
+    # "o3": "o3: 高度な推論能力。数学・科学・複雑な意思決定に強い。",
+    # "o3-pro": "o3-pro: o3の高信頼性版。重要な意思決定や複雑な推論に。",
+    "o4-mini": "o4-mini: oシリーズの最新推論特化型。日常業務の自動化やリアルタイム性が求められるタスクに。",
+    "o4-mini-high": "o4-mini-high: o4-miniの高精度・高信頼性版。ミッションクリティカルな推論や複雑な業務に。",
+    "o1": "o1: 強化学習ベースの推論モデル。コード生成や段階的な推論が必要な技術タスクに。",
+}
+
 # チャット履歴ファイルパス
 def get_history_path(user_id):
     return os.path.join(CHAT_HISTORY_DIR, f"{user_id}.json")
@@ -43,7 +59,6 @@ def build_messages_from_history(history, latest_user_message):
 # ChatGPT に問い合わせ（モデルを引数化）
 def chatbot_response(message, full_history, user_id, model_name):
     messages = build_messages_from_history(full_history, message)
-
     try:
         response = client.chat.completions.create(
             model=model_name,
@@ -90,10 +105,13 @@ with gr.Blocks() as app:
     user_id = gr.Textbox(label="ユーザーID", placeholder="例: user_xyz")
 
     model_selector = gr.Dropdown(
-        choices=["chatgpt-4o-latest", "gpt-4o"],
-        value="gpt-4o",
+        choices=list(MODEL_INFO.keys()),
+        value="chatgpt-4o-latest",
         label="モデル選択"
     )
+
+    # モデルの用途を表示
+    model_info_display = gr.Markdown(MODEL_INFO["chatgpt-4o-latest"])
 
     chatbot = gr.Chatbot(label="チャット", type="messages")
     msg = gr.Textbox(label="メッセージを入力")
@@ -128,6 +146,10 @@ with gr.Blocks() as app:
     def export_markdown(user_id, history):
         return export_latest_to_markdown(user_id, history)
 
+    # モデル変更時の説明更新
+    def update_model_info(selected_model):
+        return MODEL_INFO.get(selected_model, "")
+
     # イベント設定
     msg.submit(
         fn=user_submit,
@@ -145,6 +167,12 @@ with gr.Blocks() as app:
         fn=export_markdown,
         inputs=[user_id, state],
         outputs=output_status
+    )
+
+    model_selector.change(
+        fn=update_model_info,
+        inputs=[model_selector],
+        outputs=model_info_display
     )
 
 app.launch(server_port=8510)
