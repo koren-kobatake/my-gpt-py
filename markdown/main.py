@@ -100,7 +100,7 @@ def export_latest_to_markdown(user_id, history):
 
 # Gradio アプリ
 with gr.Blocks() as app:
-    gr.Markdown("# ChatGPT（最新の質問＆回答のみMarkdown保存）")
+    gr.Markdown("# Markdown保存版")
 
     user_id = gr.Textbox(label="ユーザーID", placeholder="例: user_xyz")
 
@@ -115,10 +115,10 @@ with gr.Blocks() as app:
 
     chatbot = gr.Chatbot(label="チャット", type="messages")
     msg = gr.Textbox(label="メッセージを入力")
-    clear = gr.Button("チャット履歴をクリア")
+    clear = gr.Button("チャット履歴クリア")
     state = gr.State([])  # チャット履歴
     output_status = gr.Textbox(label="出力ステータス", interactive=False)
-    export_button = gr.Button("📝 最新の回答をMarkdown保存")
+    export_button = gr.Button("📝 Markdown保存")
 
     # Gradio用チャット形式に変換
     def update_chatbot_display(history):
